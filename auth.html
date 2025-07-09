@@ -1,17 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Smart SDLC OAuth Login</title>
-  <!-- COMPAT version of Firebase works without ES modules -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+   <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f0f4f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h2 {
+      color: #1e1e2f;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 260px;
+      padding: 10px 20px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .btn img {
+      height: 20px;
+      margin-right: 12px;
+    }
+
+    .google {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ddd;
+    }
+
+    .google:hover {
+      background-color: #f1f1f1;
+    }
+
+    .github {
+      background-color: #000;
+      color: #fff;
+    }
+
+    .github:hover {
+      background-color: #333;
+    }
+  </style>
 </head>
-<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: Arial;">
-
-  <h2>Login with OAuth</h2>
-  <button onclick="loginWithGoogle()" style="padding:10px;margin:10px;">Login with Google</button>
-  <button onclick="loginWithGithub()" style="padding:10px;margin:10px;">Login with GitHub</button>
-
+<body>
+  <button class="btn google" onclick="loginWithGoogle()">
+    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo">
+    Continue with Google
+  </button>
+  
+  <button class="btn github" onclick="loginWithGithub()">
+    <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub logo">
+    Continue with GitHub
+  </button>
   <script>
      console.log("Firebase initialized");
     const firebaseConfig = {
