@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Smart SDLC OAuth Login</title>
+  <!-- COMPAT version of Firebase works without ES modules -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+</head>
+<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: Arial;">
+
+  <h2>Login with OAuth</h2>
+  <button onclick="loginWithGoogle()" style="padding:10px;margin:10px;">Login with Google</button>
+  <button onclick="loginWithGithub()" style="padding:10px;margin:10px;">Login with GitHub</button>
+
+  <script>
+     console.log("Firebase initialized");
+    const firebaseConfig = {
+        apiKey: "AIzaSyDAEoNzIPqr7Fhbz3F8w-1TnfqWf7e3JWo",
+        authDomain: "smart-sdlc-e1473.firebaseapp.com",
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    function loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => result.user.getIdToken())
+        .then((idToken) => {
+          window.parent.postMessage({ idToken }, "*");
+        })
+        .catch((error) => {
+          alert("Google Login Failed: " + error.message);
+        });
+    }
+
+    function loginWithGithub() {
+      const provider = new firebase.auth.GithubAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => result.user.getIdToken())
+        .then((idToken) => {
+          window.parent.postMessage({ idToken }, "*");
+        })
+        .catch((error) => {
+          alert("GitHub Login Failed: " + error.message);
+        });
+    }
+  </script>
+</body>
+</html>
