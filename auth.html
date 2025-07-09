@@ -1,49 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Smart SDLC OAuth Login</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-</head>
-<body>
-  <h3>Signing you in…</h3>
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const providerName = params.get("provider"); // "google" or "github"
-    const redirectBack = encodeURIComponent("http://localhost:8501"); // Your Streamlit URL
-
-    // Init Firebase
-    firebase.initializeApp({
-      apiKey: "AIzaSyDAEoNzIPqr7Fhbz3F8w-1TnfqWf7e3JWo",
-      authDomain: "smart-sdlc-e1473.firebaseapp.com",
-    });
-
-    const auth = firebase.auth();
-    let provider;
-    if (providerName === "github") {
-      provider = new firebase.auth.GithubAuthProvider();
-    } else {
-      provider = new firebase.auth.GoogleAuthProvider();
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 200px;
+      width: 100%;
+      background-color: #f9fbfc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-top: 1px;
+      box-sizing: border-box;
     }
+  
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 280px;
+      padding: 6px 12px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      transition: all 0.2s ease;
+    }
+  
+    .btn img {
+      height: 30px;
+      margin-right: 6px;
+    }
+  
+    .google {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ccc;
+    }
+  
+    .google:hover {
+      background-color: #51b8e1;
+    }
+  
+    .github {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ccc;
+    }
+  
+    .github:hover {
+      background-color: #51b8e1;
+    }
+</style>
 
-    // On page load, check if this is a callback
-    auth.getRedirectResult()
-      .then(result => {
-        if (result && result.user) {
-          return result.user.getIdToken();
-        }
-        // Not a callback: start the redirect flow
-        return auth.signInWithRedirect(provider);
-      })
-      .then(idToken => {
-        // After successful sign-in, send user back to Streamlit with token
-        window.location.href = `http://localhost:8501/?idToken=${idToken}`;
-      })
-      .catch(err => {
-        console.error("Redirect login failed:", err);
-        document.body.innerHTML = `<p style="color:red">Login error: ${err.message}</p>`;
+<body>
+  <button class="btn google" onclick="loginWithGoogle()">
+    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+    Continue with Google
+  </button>
+  
+  <button class="btn github" onclick="loginWithGithub()">
+    <img src="https://www.svgrepo.com/show/303615/github-icon-1-logo.svg" alt="GitHub">
+    Continue with GitHub
+  </button>
+
+  <script>
+     console.log("Firebase initialized");
+    const firebaseConfig = {
+        apiKey: "AIzaSyDAEoNzIPqr7Fhbz3F8w-1TnfqWf7e3JWo",
+        authDomain: "smart-sdlc-e1473.firebaseapp.com",
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
+
+function loginWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .then((result) => result.user.getIdToken())
+    .then((idToken) => {
+      // Send token to FastAPI backend for verification
+      return fetch("http://localhost:8000/auth/firebase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken })
       });
-  </script>
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Google User Verified:", data);
+      // Send token to parent window (Streamlit)
+      window.opener?.postMessage({ idToken }, "*");
+      window.close();
+    })
+    .catch((error) => {
+      alert("Google Login Failed: " + error.message);
+    });
+}
+
+function loginWithGithub() {
+  const provider = new firebase.auth.GithubAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .then((result) => result.user.getIdToken())
+    .then((idToken) => {
+      // Send token to FastAPI backend for verification
+      return fetch("http://localhost:8000/auth/firebase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken })
+      });
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("GitHub User Verified:", data);
+      // Send token to parent window (Streamlit)
+      window.opener?.postMessage({ idToken }, "*");
+      window.close();
+    })
+    .catch((error) => {
+      alert("GitHub Login Failed: " + error.message);
+    });
+}
+</script>
 </body>
 </html>
