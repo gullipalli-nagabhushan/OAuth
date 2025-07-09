@@ -1,44 +1,49 @@
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script>
-// Read provider from URL
-const params = new URLSearchParams(window.location.search);
-const providerName = params.get("provider"); // "google" or "github"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart SDLC OAuth Login</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <h3>Signing you in…</h3>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const providerName = params.get("provider"); // "google" or "github"
+    const redirectBack = encodeURIComponent("http://localhost:8501"); // Your Streamlit URL
 
-// Firebase init
- console.log("Firebase initialized");
-  const firebaseConfig = {
+    // Init Firebase
+    firebase.initializeApp({
       apiKey: "AIzaSyDAEoNzIPqr7Fhbz3F8w-1TnfqWf7e3JWo",
       authDomain: "smart-sdlc-e1473.firebaseapp.com",
-  };
+    });
 
-  // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-// Choose provider
-let provider;
-if (providerName === "github") {
-  provider = new firebase.auth.GithubAuthProvider();
-} else {
-  provider = new firebase.auth.GoogleAuthProvider();
-}
-
-// Popup login
-auth.signInWithPopup(provider)
-  .then(result => result.user.getIdToken())
-  .then(idToken => {
-    window.opener.postMessage({ idToken }, "*");
-    window.close();
-  })
-  .catch(err => {
-    alert("Login failed: " + err.message);
-    window.close();
-  });
-  
-  window.addEventListener("load", () => {
-    if (window.opener) {
-      window.opener.postMessage({ error: "Login cancelled or blocked" }, "*");
+    const auth = firebase.auth();
+    let provider;
+    if (providerName === "github") {
+      provider = new firebase.auth.GithubAuthProvider();
+    } else {
+      provider = new firebase.auth.GoogleAuthProvider();
     }
-  });
-</script>
+
+    // On page load, check if this is a callback
+    auth.getRedirectResult()
+      .then(result => {
+        if (result && result.user) {
+          return result.user.getIdToken();
+        }
+        // Not a callback: start the redirect flow
+        return auth.signInWithRedirect(provider);
+      })
+      .then(idToken => {
+        // After successful sign-in, send user back to Streamlit with token
+        window.location.href = `http://localhost:8501/?idToken=${idToken}`;
+      })
+      .catch(err => {
+        console.error("Redirect login failed:", err);
+        document.body.innerHTML = `<p style="color:red">Login error: ${err.message}</p>`;
+      });
+  </script>
+</body>
+</html>
