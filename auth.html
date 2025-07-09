@@ -14,6 +14,7 @@
       background-color: #f9fbfc;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       padding-top: 1px;
+      gap:20px;
       box-sizing: border-box;
     }
   
@@ -83,26 +84,39 @@
     function loginWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider)
-        .then((result) => result.user.getIdToken())
-        .then((idToken) => {
-          window.parent.postMessage({ idToken }, "*");
+         .then(result => {
+            return result.user.getIdToken();
         })
-        .catch((error) => {
-          alert("Google Login Failed: " + error.message);
-        });
+        .then(idToken => {
+        window.opener.postMessage({ idToken }, "*");
+        window.close();
+      })
+      .catch(error => {
+        console.error("Google Login Failed:", error.message);
+      });
     }
 
     function loginWithGithub() {
       const provider = new firebase.auth.GithubAuthProvider();
       firebase.auth().signInWithPopup(provider)
-        .then((result) => result.user.getIdToken())
-        .then((idToken) => {
-          window.parent.postMessage({ idToken }, "*");
+        .then(result => {
+          return result.user.getIdToken();
         })
-        .catch((error) => {
-          alert("GitHub Login Failed: " + error.message);
-        });
+        .then(idToken => {
+        window.opener.postMessage({ idToken }, "*");
+        window.close();
+      })
+      .catch(error => {
+        console.error("Google Login Failed:", error.message);
+      });
+  }
+    
+  window.addEventListener("load", () => {
+    if (window.opener) {
+      window.opener.postMessage({ error: "Login cancelled or blocked" }, "*");
     }
-  </script>
+  });
+</script>
+
 </body>
 </html>
