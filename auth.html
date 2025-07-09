@@ -8,62 +8,57 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 260px;
+      justify-content: flex-start;
+      height: 200px;
       width: 100%;
       background-color: #f9fbfc;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding-top: 0rem !important;
+      padding-top: 1px;
       box-sizing: border-box;
     }
-
-    h3 {
-      font-size: 18px;
-      color: #1e1e2f;
-      margin-bottom: 12px;
-    }
-
+  
     .btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 220px;
+      width: 280px;
       padding: 6px 12px;
-      margin: 6px 0;
+      margin: 5px 0;
       border: none;
-      border-radius: 6px;
-      font-size: 14px;
+      border-radius: 8px;
+      font-size: 20px;
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
       transition: all 0.2s ease;
     }
-
+  
     .btn img {
-      height: 18px;
-      margin-right: 8px;
+      height: 30px;
+      margin-right: 6px;
     }
-
+  
     .google {
       background-color: #fff;
       color: #000;
       border: 1px solid #ccc;
     }
-
+  
     .google:hover {
-      background-color: #f0f0f0;
+      background-color: #51b8e1;
     }
-
+  
     .github {
-      background-color: #000;
-      color: #fff;
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ccc;
     }
-
+  
     .github:hover {
-      background-color: #222;
+      background-color: #51b8e1;
     }
-  </style>
-</head>
+</style>
+
 <body>
   <button class="btn google" onclick="loginWithGoogle()">
     <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
@@ -71,9 +66,10 @@
   </button>
   
   <button class="btn github" onclick="loginWithGithub()">
-    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark-Light.png" alt="GitHub">
+    <img src="https://www.svgrepo.com/show/303615/github-icon-1-logo.svg" alt="GitHub">
     Continue with GitHub
   </button>
+
   <script>
      console.log("Firebase initialized");
     const firebaseConfig = {
