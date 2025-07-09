@@ -1,122 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 200px;
-      width: 100%;
-      background-color: #f9fbfc;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding-top: 1px;
-      gap:20px;
-      box-sizing: border-box;
-    }
-  
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 280px;
-      padding: 6px 12px;
-      margin: 5px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 20px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-      transition: all 0.2s ease;
-    }
-  
-    .btn img {
-      height: 30px;
-      margin-right: 6px;
-    }
-  
-    .google {
-      background-color: #fff;
-      color: #000;
-      border: 1px solid #ccc;
-    }
-  
-    .google:hover {
-      background-color: #51b8e1;
-    }
-  
-    .github {
-      background-color: #fff;
-      color: #000;
-      border: 1px solid #ccc;
-    }
-  
-    .github:hover {
-      background-color: #51b8e1;
-    }
-</style>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script>
+// Read provider from URL
+const params = new URLSearchParams(window.location.search);
+const providerName = params.get("provider"); // "google" or "github"
 
-<body>
-  <button class="btn google" onclick="loginWithGoogle()">
-    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
-    Continue with Google
-  </button>
+// Firebase init
+ console.log("Firebase initialized");
+  const firebaseConfig = {
+      apiKey: "AIzaSyDAEoNzIPqr7Fhbz3F8w-1TnfqWf7e3JWo",
+      authDomain: "smart-sdlc-e1473.firebaseapp.com",
+  };
+
+  // Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Choose provider
+let provider;
+if (providerName === "github") {
+  provider = new firebase.auth.GithubAuthProvider();
+} else {
+  provider = new firebase.auth.GoogleAuthProvider();
+}
+
+// Popup login
+auth.signInWithPopup(provider)
+  .then(result => result.user.getIdToken())
+  .then(idToken => {
+    window.opener.postMessage({ idToken }, "*");
+    window.close();
+  })
+  .catch(err => {
+    alert("Login failed: " + err.message);
+    window.close();
+  });
   
-  <button class="btn github" onclick="loginWithGithub()">
-    <img src="https://www.svgrepo.com/show/303615/github-icon-1-logo.svg" alt="GitHub">
-    Continue with GitHub
-  </button>
-
-  <script>
-     console.log("Firebase initialized");
-    const firebaseConfig = {
-        apiKey: "AIzaSyDAEoNzIPqr7Fhbz3F8w-1TnfqWf7e3JWo",
-        authDomain: "smart-sdlc-e1473.firebaseapp.com",
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    function loginWithGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider)
-         .then(result => {
-            return result.user.getIdToken();
-        })
-        .then(idToken => {
-        window.opener.postMessage({ idToken }, "*");
-        window.close();
-      })
-      .catch(error => {
-        console.error("Google Login Failed:", error.message);
-      });
-    }
-
-    function loginWithGithub() {
-      const provider = new firebase.auth.GithubAuthProvider();
-      firebase.auth().signInWithPopup(provider)
-        .then(result => {
-          return result.user.getIdToken();
-        })
-        .then(idToken => {
-        window.opener.postMessage({ idToken }, "*");
-        window.close();
-      })
-      .catch(error => {
-        console.error("Google Login Failed:", error.message);
-      });
-  }
-    
   window.addEventListener("load", () => {
     if (window.opener) {
       window.opener.postMessage({ error: "Login cancelled or blocked" }, "*");
     }
   });
 </script>
-
-</body>
-</html>
