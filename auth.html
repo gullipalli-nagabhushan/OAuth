@@ -87,7 +87,7 @@ function loginWithGoogle() {
     .then((result) => result.user.getIdToken())
     .then((idToken) => {
       // Send token to FastAPI backend for verification
-      return fetch("http://localhost:8000/auth/firebase", {
+      return fetch("http://localhost:8000/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken })
@@ -111,7 +111,7 @@ function loginWithGithub() {
     .then((result) => result.user.getIdToken())
     .then((idToken) => {
       // Send token to FastAPI backend for verification
-      return fetch("http://localhost:8000/auth/firebase", {
+      return fetch("http://localhost:8000/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken })
