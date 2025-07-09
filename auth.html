@@ -3,51 +3,55 @@
 <head>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-   <style>
+  <style>
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 260px;
-      background-color: #f0f4f8;
+      width: 100%;
+      background-color: #f9fbfc;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 10px;
+      box-sizing: border-box;
     }
 
-    h2 {
+    h3 {
+      font-size: 18px;
       color: #1e1e2f;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
 
     .btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 260px;
-      padding: 10px 20px;
-      margin: 10px 0;
+      width: 220px;
+      padding: 6px 12px;
+      margin: 6px 0;
       border: none;
       border-radius: 6px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      transition: all 0.2s ease;
     }
 
     .btn img {
-      height: 20px;
-      margin-right: 12px;
+      height: 18px;
+      margin-right: 8px;
     }
 
     .google {
       background-color: #fff;
       color: #000;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
     }
 
     .google:hover {
-      background-color: #f1f1f1;
+      background-color: #f0f0f0;
     }
 
     .github {
@@ -56,18 +60,18 @@
     }
 
     .github:hover {
-      background-color: #333;
+      background-color: #222;
     }
   </style>
 </head>
 <body>
   <button class="btn google" onclick="loginWithGoogle()">
-    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo">
+    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
     Continue with Google
   </button>
   
   <button class="btn github" onclick="loginWithGithub()">
-    <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub logo">
+    <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub">
     Continue with GitHub
   </button>
   <script>
